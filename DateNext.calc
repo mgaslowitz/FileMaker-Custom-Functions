@@ -1,0 +1,87 @@
+Let ( [
+	
+	//m = "3" ;
+	//d = "1" ;
+	//y = "" ;
+		
+//	Clean parameters
+	
+	m = GetAsNumber ( Filter ( m ; "1234567890" ) ) ;
+	d = GetAsNumber ( Filter ( d ; "1234567890" ) ) ;
+	y = GetAsNumber ( Filter ( y ; "1234567890" ) ) ;
+
+		
+//	Parse the Current Date
+	
+	~date = Get ( CurrentDate ) ;
+	~cm = Month ( ~date ) ;
+	~cd = Day ( ~date ) ;
+	~cy = Year ( ~date ) ;
+
+		
+// 	Next Month
+	nm = Case (
+
+		//	use the month provided
+			m > 0  ; 
+				m  ;
+
+		// 	date in the past defaults to December
+			y > 0 and y < ~cy ;
+				12 ;
+	
+		// 	date in the future default to January
+			y  > ~cy ;
+				1 ; 
+
+		//	+1 if current date is past provided day
+				~cm + ( d > 0 and d ≤ ~cd )
+
+			) ; 
+
+
+//	Next Day
+	nd = Case (
+
+		// 	use the day provided
+			d > 0 ;
+				d ; 
+
+		// 	date in the past defaults to last day of the month
+			( y > 0 and y < ~cy ) or ( y = ~cy and m > 0 and m < ~cm ) ;					
+				Day ( Date ( nm + 1 ; 1 ; y ) -1 ) ;
+	
+		// 	date in the future defaults to first of the month
+			y  > ~cy or ( m > 0 and m > ~cm ) ;
+				1 ;
+
+		//	add one to the current day
+			m = "" or m = 0 or m = ~cm ;
+				~cd +1 ;
+
+			) ; 
+	
+		
+//	Next Year	
+	ny =  Case (
+
+		// 	use the year provided
+			y > 0 ;
+				y ;
+
+		//	date in the past adds one to the current year
+			~cy + Case (
+				( m > 0 and m < ~cm ) or ( m = ~cm and d > 0 and d < ~cd ) ;
+					1 
+				)
+
+			) 
+			
+	] ;
+	
+
+//	Put it toether	
+	Date ( nm ; nd ; ny )
+
+	
+)
