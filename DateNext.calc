@@ -19,8 +19,8 @@ Let ( [
 	~cy = Year ( ~date ) ;
 
 		
-// 	Next Month
-	nm = Case (
+//	Month
+	~m = Case (
 
 		//	use the month provided
 			m > 0  ; 
@@ -40,8 +40,8 @@ Let ( [
 			) ; 
 
 
-//	Next Day
-	nd = Case (
+//	Day
+	~d = Case (
 
 		// 	use the day provided
 			d > 0 ;
@@ -49,7 +49,7 @@ Let ( [
 
 		// 	date in the past defaults to last day of the month
 			( y > 0 and y < ~cy ) or ( y = ~cy and m > 0 and m < ~cm ) ;					
-				Day ( Date ( nm + 1 ; 1 ; y ) -1 ) ;
+				Day ( Date ( ~m + 1 ; 1 ; y ) -1 ) ;
 	
 		// 	date in the future defaults to first of the month
 			y  > ~cy or ( m > 0 and m > ~cm ) ;
@@ -62,8 +62,8 @@ Let ( [
 			) ; 
 	
 		
-//	Next Year	
-	ny =  Case (
+//	Year	
+	~y =  Case (
 
 		// 	use the year provided
 			y > 0 ;
@@ -81,7 +81,7 @@ Let ( [
 	
 
 //	Put it toether	
-	Date ( nm ; nd ; ny )
+	Date ( ~m ; ~d ; ~y )
 
 	
 )
