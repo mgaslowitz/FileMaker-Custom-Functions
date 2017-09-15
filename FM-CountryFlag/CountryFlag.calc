@@ -1,0 +1,107 @@
+
+/* ------------------------------------------------------------ *\
+
+    CountryFlag ( countryCode )
+
+    -------
+    PURPOSE
+    -------
+    
+    Display an emoji flag
+
+    ----------
+    PARAMETERS
+    ----------
+
+    countryCode - two-letter country code
+
+    https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes
+
+    ------------
+    DEPENDENCIES
+    ------------
+
+    FileMaker 16
+
+    -----
+    NOTES
+    -----
+
+    Regional Indicator Symbol
+
+    https://en.wikipedia.org/wiki/Regional_Indicator_Symbol
+    http://www.unicode.org/charts/PDF/U1F100.pdf
+
+    These characters can be used in pairs to represent regional codes. 
+    In some emoji implementations, certain pairs may be recognized and 
+    displayed by alternate means; for instance, an implementation might 
+    recognize F + R and display this combination with a symbol representing 
+    the flag of France.
+
+    -------
+    AUTHORS
+    -------
+        
+    (mbg)   Michael Gaslowitz <michael@360works.com>
+
+    -------
+    HISTORY
+    -------
+ 
+    2017-09-13  (mbg)   Filter parameter 
+                (mbg)   Added substitution for United Kingdom (UK)
+    2017-09-08  (mbg)   Created custom function
+
+\* ------------------------------------------------------------ */
+
+
+Let ([
+
+    ~countryCode = countryCode ;
+    ~countryCode = Filter ( Upper ( ~countryCode ) ; "QWERTYUIOPASDFGHJKLZXCVBNM" ) ;
+    ~countryCode = Substitute ( ~countryCode ; [ "UK" ; "GB" ] ) ;
+
+    ~regionalIndicatorSymbol.array = JSONSetElement ( "{}";
+
+        [ "A" ; "F09F87A6" ; JSONString ] ; // U+1F1E6
+        [ "B" ; "F09F87A7" ; JSONString ] ; // U+1F1E7
+        [ "C" ; "F09F87A8" ; JSONString ] ; // U+1F1E8
+        [ "D" ; "F09F87A9" ; JSONString ] ; // U+1F1E9
+        [ "E" ; "F09F87AA" ; JSONString ] ; // U+1F1EA
+        [ "F" ; "F09F87AB" ; JSONString ] ; // U+1F1EB
+        [ "G" ; "F09F87AC" ; JSONString ] ; // U+1F1EC
+        [ "H" ; "F09F87AD" ; JSONString ] ; // U+1F1ED
+        [ "I" ; "F09F87AE" ; JSONString ] ; // U+1F1EE
+        [ "J" ; "F09F87AF" ; JSONString ] ; // U+1F1FE
+        [ "K" ; "F09F87B0" ; JSONString ] ; // U+1F1F0
+        [ "L" ; "F09F87B1" ; JSONString ] ; // U+1F1F1
+        [ "M" ; "F09F87B2" ; JSONString ] ; // U+1F1F2
+        [ "N" ; "F09F87B3" ; JSONString ] ; // U+1F1F3
+        [ "O" ; "F09F87B4" ; JSONString ] ; // U+1F1F4
+        [ "P" ; "F09F87B5" ; JSONString ] ; // U+1F1F5
+        [ "Q" ; "F09F87B6" ; JSONString ] ; // U+1F1F6
+        [ "R" ; "F09F87B7" ; JSONString ] ; // U+1F1F7
+        [ "S" ; "F09F87B8" ; JSONString ] ; // U+1F1F8
+        [ "T" ; "F09F87B9" ; JSONString ] ; // U+1F1F9
+        [ "U" ; "F09F87BA" ; JSONString ] ; // U+1F1FA
+        [ "V" ; "F09F87BB" ; JSONString ] ; // U+1F1FB
+        [ "W" ; "F09F87BC" ; JSONString ] ; // U+1F1FC
+        [ "X" ; "F09F87BD" ; JSONString ] ; // U+1F1FD
+        [ "Y" ; "F09F87BE" ; JSONString ] ; // U+1F1FE
+        [ "Z" ; "F09F87BF" ; JSONString ]   // U+1F1FF
+
+    ) ;
+
+    ~letter1 = JSONGetElement ( ~regionalIndicatorSymbol.array ;  Left ( ~countryCode ; 1 ) ) ;
+    ~letter2 = JSONGetElement ( ~regionalIndicatorSymbol.array ; Right ( ~countryCode ; 1 ) ) ;
+
+    ~! = ""
+
+];
+
+    Case ( 
+        Length ( ~countryCode ) = 2 ; 
+            HexDecode ( ~letter1 & ~letter2 ) 
+    )
+
+)
