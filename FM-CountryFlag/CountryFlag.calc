@@ -48,6 +48,8 @@
     HISTORY
     -------
  
+    2017-09-17  (mbg)   Renamed local variable
+                (mbg)   Parse JSON in case statement
     2017-09-13  (mbg)   Filter parameter 
                 (mbg)   Added substitution for United Kingdom (UK)
     2017-09-08  (mbg)   Created custom function
@@ -61,7 +63,7 @@ Let ([
     ~countryCode = Filter ( Upper ( ~countryCode ) ; "QWERTYUIOPASDFGHJKLZXCVBNM" ) ;
     ~countryCode = Substitute ( ~countryCode ; [ "UK" ; "GB" ] ) ;
 
-    ~regionalIndicatorSymbol.array = JSONSetElement ( "{}";
+    ~regionalIndicatorSymbol.json = JSONSetElement ( "{}";
 
         [ "A" ; "F09F87A6" ; JSONString ] ; // U+1F1E6
         [ "B" ; "F09F87A7" ; JSONString ] ; // U+1F1E7
@@ -90,18 +92,19 @@ Let ([
         [ "Y" ; "F09F87BE" ; JSONString ] ; // U+1F1FE
         [ "Z" ; "F09F87BF" ; JSONString ]   // U+1F1FF
 
-    ) ;
-
-    ~letter1 = JSONGetElement ( ~regionalIndicatorSymbol.array ;  Left ( ~countryCode ; 1 ) ) ;
-    ~letter2 = JSONGetElement ( ~regionalIndicatorSymbol.array ; Right ( ~countryCode ; 1 ) ) ;
-
-    ~! = ""
+    ) 
 
 ];
 
     Case ( 
+
         Length ( ~countryCode ) = 2 ; 
-            HexDecode ( ~letter1 & ~letter2 ) 
+        
+            HexDecode ( 
+                JSONGetElement ( ~regionalIndicatorSymbol.json ;  Left ( ~countryCode ; 1 ) ) &
+                JSONGetElement ( ~regionalIndicatorSymbol.json ; Right ( ~countryCode ; 1 ) ) 
+            ) 
+    
     )
 
 )
